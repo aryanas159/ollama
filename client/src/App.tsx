@@ -5,9 +5,10 @@ function App() {
 	const [models, setModels] = useState<any[]>([]);
 	const [currentModel, setCurrentModel] = useState<any>(null);
 	const [messages, setMessages] = useState<any[]>([]);
+	const [input, setInput] = useState("");
 	useEffect(() => {
 		const getModels = async () => {
-			const { data } = await axios.get("http://localhost:3000/list");
+			const { data } = await axios.get("http://4.236.176.115:3000/list");
 			setModels(data.models);
 			console.log(data);
 		};
@@ -17,14 +18,14 @@ function App() {
 		setMessages([]);
 	}, [currentModel]);
 	const sendMessage = async () => {
-		
-		const newMessages = [...messages, { role: "user", content: "hello" }];
-    setMessages(newMessages);
-		const { data } = await axios.post("http://localhost:3000/chat", {
+		const newMessages = [...messages, { role: "user", content: input }];
+		setMessages(newMessages);
+		const { data } = await axios.post("http://4.236.176.115:3000/chat", {
 			model: currentModel,
 			messages: newMessages,
 		});
 		setMessages([...newMessages, data.message]);
+		setInput("");
 	};
 	return (
 		<>
@@ -48,6 +49,11 @@ function App() {
 							</div>
 						);
 					})}
+					<input
+						type="text"
+						value={input}
+						onChange={(e) => setInput(e.target.value)}
+					/>
 					<button onClick={sendMessage}>Send Message</button>
 				</>
 			)}
